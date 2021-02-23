@@ -1,4 +1,6 @@
 ﻿using Business.Abstract;
+using Business.Constants;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -22,10 +24,13 @@ namespace Business.Concrete
             throw new NotImplementedException();
         }
 
-        public List<Product> GetAll()
+        public IDataResult<List<Product>> GetAll()
         {
-            // iş kodları
-            return _productdal.GetAll();
+            if (DateTime.Now.Hour==19)
+            {
+                return ErrorDataResult();
+            }
+            return new SuccessDataResult<List<Product>>(_productdal.GetAll(),true,"Ürünler Listelendi");
 
         }
 
@@ -43,5 +48,27 @@ namespace Business.Concrete
         {
             return _productdal.GetProductDetails();
         }
+
+        public IResult Add(Product product)
+        {
+            if (product.ProductName.Length<2)                               
+            {
+                return new ErrorResult(Messages.ProductNameInvalid);
+            }
+            _productdal.Add(product);
+            return new SuccessResult(Messages.ProductAdded);
+        }
+
+        public Product GetById(int productId)
+        {
+            return _productdal.Get(p=>p.ProductId == productId);
+        }
+
+
+
+
+
+        //buradaki if'te else 'e gerek yok. Çünkü zaten if çalışmışsa return ile bitecewk. İf çalışmıyorsa zaten Ekleme başarılıdır if'lik bir durum yoktur.
     }
+
 }
