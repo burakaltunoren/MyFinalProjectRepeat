@@ -28,25 +28,25 @@ namespace Business.Concrete
         {
             if (DateTime.Now.Hour==19)
             {
-                return ErrorDataResult();
+                return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
             }
-            return new SuccessDataResult<List<Product>>(_productdal.GetAll(),true,"Ürünler Listelendi");
+            return new SuccessDataResult<List<Product>>(_productdal.GetAll(),Messages.ProductsListed);
 
         }
 
-        public List<Product> GetAllByCategoryId(int id)
+        public IDataResult<List<Product>> GetAllByCategoryId(int id)
         {
-            return _productdal.GetAll(p=>p.CategoryId == id);
+            return new SuccessDataResult<List<Product>>(_productdal.GetAll(p=>p.CategoryId == id));
         }
 
-        public List<Product> GetByUnitPrice(decimal min, decimal max)
+        public IDataResult<List<Product>> GetByUnitPrice(decimal min, decimal max)
         {
-            return _productdal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max);
+            return new SuccessDataResult<List<Product>>(_productdal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max));
         }
 
-        public List<ProductDetailDto> GetProductDetails()
+        public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
-            return _productdal.GetProductDetails();
+            return new SuccessDataResult<List<ProductDetailDto>>(_productdal.GetProductDetails());
         }
 
         public IResult Add(Product product)
@@ -59,9 +59,9 @@ namespace Business.Concrete
             return new SuccessResult(Messages.ProductAdded);
         }
 
-        public Product GetById(int productId)
+        public IDataResult<Product> GetById(int productId)
         {
-            return _productdal.Get(p=>p.ProductId == productId);
+            return new SuccessDataResult<Product>(_productdal.Get(p=>p.ProductId == productId));
         }
 
 
